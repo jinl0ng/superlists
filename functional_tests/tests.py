@@ -8,7 +8,7 @@ from contextlib import contextmanager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import staleness_of
 
-TIMEOUT = 0.2
+TIMEOUT = 0.1
 
 class NewVisitorTest(LiveServerTestCase):
 
@@ -117,3 +117,27 @@ class NewVisitorTest(LiveServerTestCase):
 
         #Satisfied, they both go back to sleep
 
+
+    def test_layout_and_styling(self):
+
+        self.browser.get(self.live_server_url)
+        self.browser.set_window_size(1024, 768)
+
+        # inputbox center?
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=5
+        )
+
+        # new list inputbox center?
+        inputbox.send_keys('testing')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(TIMEOUT)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=5
+        )
